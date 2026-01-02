@@ -1,0 +1,66 @@
+# Security Feed Aggregator Configuration
+# Copy this file to config.yaml and customize for your needs
+
+app:
+  timezone: "America/New_York"
+  mode: "instant"   # instant | digest
+  digest_output: "data/digest.md"
+  db_path: "data/alerts.sqlite"  # SQLite database for deduplication
+
+ntfy:
+  base_url: "https://ntfy.sh"
+  topic: "sec-alerts-yourtopic"  # Change this to a hard-to-guess topic name
+  # Optional: headers for auth if self-hosted or protected
+  # headers:
+  #   Authorization: "Bearer YOUR_TOKEN"
+  priority: "high"  # min | low | default | high | urgent
+
+filters:
+  keywords:
+    - rce
+    - auth bypass
+    - exchange
+    - citrix
+    - confluence
+    - fortinet
+    - ivanti
+    - openssl
+    - kubernetes
+    - vmware
+    - palo alto
+    - juniper
+  deny_keywords:
+    - "crypto price"
+    - "giveaway"
+  min_cvss: 8.8  # Minimum CVSS score to alert on
+  kev_always_alert: true  # Always alert on CISA KEV items
+
+feeds:
+  rss:
+    - name: "Hacker News"
+      url: "https://news.ycombinator.com/rss"
+      category: "news"
+    - name: "BleepingComputer"
+      url: "https://www.bleepingcomputer.com/feed/"
+      category: "news"
+    - name: "KrebsOnSecurity"
+      url: "https://krebsonsecurity.com/feed/"
+      category: "news"
+    - name: "SANS ISC Diary"
+      url: "https://isc.sans.edu/rssfeed.xml"
+      category: "news"
+
+  kev:
+    enabled: true  # CISA Known Exploited Vulnerabilities
+
+  nvd:
+    enabled: true
+    # Choose one approach:
+    # - "api_recent": fetch recent CVEs via NVD API (needs key for scale)
+    # - "json_feed": download NVD JSON feed for recent changes (bigger)
+    mode: "api_recent"
+    results_per_run: 200
+    # Optional NVD API key (recommended for higher rate limits)
+    # Get one at: https://nvd.nist.gov/developers/request-an-api-key
+    api_key: ""
+
